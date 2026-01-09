@@ -121,7 +121,7 @@ class UpcomingService
                 continue;
             }
 
-            $queryList[] = $this->getEntityTypeQuery($entityType, $user, $futureDays, $params->includeShared);
+            $queryList[] = $this->getEntityTypeQuery($entityType, $user, $futureDays, $params);
         }
 
         if ($queryList === []) {
@@ -203,7 +203,7 @@ class UpcomingService
      * @throws Forbidden
      * @throws BadRequest
      */
-    private function getEntityTypeQuery(string $entityType, User $user, int $futureDays, bool $includeShared): Select
+    private function getEntityTypeQuery(string $entityType, User $user, int $futureDays, Params $params): Select
     {
         try {
             $beforeString = (new DateTime())->modify('+' . $futureDays . ' days')
@@ -219,7 +219,7 @@ class UpcomingService
             ->withBoolFilter(OnlyMy::NAME)
             ->withStrictAccessControl();
 
-        if ($includeShared && $this->metadata->get("scopes.$entityType.collaborators")) {
+        if ($params->includeShared && $this->metadata->get("scopes.$entityType.collaborators")) {
             $builder->withBoolFilter(Shared::NAME);
         }
 
@@ -236,6 +236,11 @@ class UpcomingService
         $queryBuilder = $builder->buildQueryBuilder();
 
         $this->apply($entityType, $user, $queryBuilder, $beforeString);
+
+        // Apply status filter if provided
+        if ($params->status !== null) {
+            $queryBuilder->where(['status' => $params->status]);
+        }
 
         $queryBuilder->select([
             'id',

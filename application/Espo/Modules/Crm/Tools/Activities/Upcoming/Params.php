@@ -40,5 +40,6 @@ class Params
         readonly public ?int $futureDays = null,
         readonly public ?array $entityTypeList = null,
         readonly public bool $includeShared = false,
+        readonly public ?string $status = null,
     ) {}
 }
