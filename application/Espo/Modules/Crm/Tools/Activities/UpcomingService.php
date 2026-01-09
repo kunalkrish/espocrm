@@ -239,7 +239,10 @@ class UpcomingService
 
         // Apply status filter if provided
         if ($params->status !== null) {
-            $queryBuilder->where(['status' => $params->status]);
+            // If statusScope is specified and matches the current entity type, apply filter
+            if ($params->statusScope === null || $params->statusScope === $entityType) {
+                $queryBuilder->where(['status' => $params->status]);
+            }
         }
 
         $queryBuilder->select([

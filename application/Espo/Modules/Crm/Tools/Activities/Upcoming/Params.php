@@ -41,5 +41,6 @@ class Params
         readonly public ?array $entityTypeList = null,
         readonly public bool $includeShared = false,
         readonly public ?string $status = null,
+        readonly public ?string $statusScope = null,
     ) {}
 }

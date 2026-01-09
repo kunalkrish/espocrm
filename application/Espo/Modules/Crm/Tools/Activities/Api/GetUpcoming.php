@@ -74,9 +74,15 @@ class GetUpcoming implements Action
         $futureDays = $request->hasQueryParam('futureDays') ? intval($request->getQueryParam('futureDays')) : null;
         $searchParams = $this->searchParamsFetcher->fetch($request);
         $status = $request->getQueryParam('status');
+        $statusScope = $request->getQueryParam('statusScope');
 
         if ($status === 'all' || $status === '') {
             $status = null;
+            $statusScope = null;
+        }
+
+        if ($statusScope === 'all' || $statusScope === '') {
+            $statusScope = null;
         }
 
         return new Params(
@@ -86,6 +92,7 @@ class GetUpcoming implements Action
             entityTypeList: $entityTypeList,
             includeShared: $request->getQueryParam('includeShared') === 'true',
             status: $status,
+            statusScope: $statusScope,
         );
     }
 
